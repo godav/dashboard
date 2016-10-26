@@ -465,7 +465,7 @@ tooltip, drillUpText, dataLabels, drillUpButton,noData,legend{
     height: 262px !important;
     position: relative;
     
-    /*z-index: 99991 !important;*/
+    /*z-index: 999999 !important;*/
 }
 
 #projects-body{
@@ -622,7 +622,7 @@ tooltip, drillUpText, dataLabels, drillUpButton,noData,legend{
         height: 561px !important;
         width: 100% !important;
         position: relative;
-        /*z-index: 99991 !important;*/
+        z-index: 999 !important;
     }
         
         #maps{
@@ -956,7 +956,7 @@ input::-webkit-input-placeholder {
     -moz-transition-duration: 1.2s;
     -o-transition-duration: 1.2s;
     transition-duration: 1.2s;
-    z-index: 999;
+    z-index: 9999999 !important;
 }
 
 #right-main{
@@ -969,7 +969,7 @@ input::-webkit-input-placeholder {
     -moz-transition-duration: 1.2s;
     -o-transition-duration: 1.2s;
     transition-duration: 1.2s;
- z-index: 999;
+    z-index: 9999999 !important;
 }
 
 
@@ -1024,7 +1024,7 @@ input::-webkit-input-placeholder {
     -o-transition-duration: 1.2s;
     transition-duration: 1.2s;
     overflow: hidden;
-    z-index: 9999;
+    z-index: 9999999;
     width: -webkit-calc(95% - 5px);
     width: -moz-calc(95% - 5px); 
     width: -o-calc(95% - 5px);

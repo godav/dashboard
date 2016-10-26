@@ -5,124 +5,124 @@ class ObsController extends AppController {
 
     //  public $uses = null;
 
-    function json_comment(){
+//    function json_comment(){
+//
+//        $params = $this->request->data;
+//
+//        $res = $this->_curlWrap('/comments.json', json_encode($params), 'POST');
+//
+//        return json_encode($res);
+//    }
+//
+//    function json_identification(){
+//
+//        $params = $this->request->data;
+//
+//        $res = $this->_curlWrap('/identifications.json', json_encode($params), 'POST');
+//
+//        return json_encode($res);
+//
+//    }
+//    
+//    function json_del_identification($id = null){
+//
+//        $res = $this->_curlWrap('/identifications/'. $id .'.json', null, 'DELETE');
+//
+//        return json_encode($res);
+//    }
+//
+//    //  Delete Observation
+//    function json_delete($id = null){
+//
+//        $res = $this->_curlWrap('/observations/'. $id .'.json', null, 'DELETE');
+//
+//        return json_encode($res);
+//
+//    }
+//
+//
+//    function json_add(){
+//
+//        /**
+//         * Todo:
+//         *  - Different call for Images
+//         *  - Different call for Projects
+//         */
+//        $results = array(
+//            'success'           => true,
+//            'data'              => null,    //  This Will Store data to send
+//            'initResponse'      => null,    //  Response from the first call, The creation of the ob
+//            'projectsResponse'  => null,    //  Response from the add projects call
+//            'imagesResponse'    => null,    //  Response from the add Images call
+//        );
+//
+//        $defaults = array(
+//           'time_zone' => 'Jerusalem'
+//        );
+//        
+//        $requestData = $this->request->data;
+//
+//        $results['data'] = array_merge($defaults, $requestData);
+//
+//        $results['initResponse'] = $this->_curlWrap('/observations.json', json_encode($results['data']), 'POST');
+//
+//        //print_r($res);
+//
+//
+//
+//        // process Files - Upload files to our server for temporary use, Will be deleted after upload to INAT.
+//        if( !empty($_FILES) )
+//        {
+//            // allowed mime / ext
+//            $allowed = array(
+//                'image/png'     => 'png',
+//                'image/gif'     => 'gif',
+//                'image/jpeg'    => 'jpg',
+//            );
+//            foreach($_FILES['file']['name'] as $key => $file){
+//                //pr($_FILES['file']['name'][$key]);
+//
+//                if( !empty($allowed[$_FILES['file']['type'][$key]]) )
+//                {   // Good MIME
+//                    $name = $_FILES['file']['name'][$key];
+//                    move_uploaded_file($_FILES['file']['tmp_name'][$key], WWW_ROOT . 'files'. DS .'temp' . DS . $name);
+//
+//                }   //ToDo: Handle un allowed error
+//
+//            }
+//        }
+//
+//        return json_encode($results);
+//    }
+//
+//    // OG = opengraph 
+//    function og_view($o_id = null)
+//    {
+//        //  pr($o_id);
+//        $meta = array();
+//
+//        $r = $this->_curlWrap("/observations/{$o_id}.json?locale=iw", null , 'GET');
+//
+//        //  Set Item Title
+//        $meta['og:title'] = "תצפית: ";
+//        if(isset($r->taxon)) $meta['og:title'] .= addslashes($r->taxon->default_name->name);
+//
+//        $meta['og:title'] .= " | " . $r->species_guess;
+//
+//        //  Images
+//        if($r->observation_photos_count > 0) $meta['og:image'] = $r->observation_photos[0]->photo->large_url;
+//
+//        //  Description
+//        $meta['og:description'] = '';
+//        if(isset($r->description))  $meta['og:description'] = addcslashes($r->description) . " | ";
+//        $meta['og:description'] .= 'תצפיטבע - קהילה מנטרת טבע בגולן.';
+//
+//        $this->set('meta', $meta);
+//
+//    }
 
-        $params = $this->request->data;
 
-        $res = $this->_curlWrap('/comments.json', json_encode($params), 'POST');
-
-        return json_encode($res);
-    }
-
-    function json_identification(){
-
-        $params = $this->request->data;
-
-        $res = $this->_curlWrap('/identifications.json', json_encode($params), 'POST');
-
-        return json_encode($res);
-
-    }
-    
-    function json_del_identification($id = null){
-
-        $res = $this->_curlWrap('/identifications/'. $id .'.json', null, 'DELETE');
-
-        return json_encode($res);
-    }
-
-    //  Delete Observation
-    function json_delete($id = null){
-
-        $res = $this->_curlWrap('/observations/'. $id .'.json', null, 'DELETE');
-
-        return json_encode($res);
-
-    }
-
-
-    function json_add(){
-
-        /**
-         * Todo:
-         *  - Different call for Images
-         *  - Different call for Projects
-         */
-        $results = array(
-            'success'           => true,
-            'data'              => null,    //  This Will Store data to send
-            'initResponse'      => null,    //  Response from the first call, The creation of the ob
-            'projectsResponse'  => null,    //  Response from the add projects call
-            'imagesResponse'    => null,    //  Response from the add Images call
-        );
-
-        $defaults = array(
-           'time_zone' => 'Jerusalem'
-        );
-        
-        $requestData = $this->request->data;
-
-        $results['data'] = array_merge($defaults, $requestData);
-
-        $results['initResponse'] = $this->_curlWrap('/observations.json', json_encode($results['data']), 'POST');
-
-        //print_r($res);
-
-
-
-        // process Files - Upload files to our server for temporary use, Will be deleted after upload to INAT.
-        if( !empty($_FILES) )
-        {
-            // allowed mime / ext
-            $allowed = array(
-                'image/png'     => 'png',
-                'image/gif'     => 'gif',
-                'image/jpeg'    => 'jpg',
-            );
-            foreach($_FILES['file']['name'] as $key => $file){
-                //pr($_FILES['file']['name'][$key]);
-
-                if( !empty($allowed[$_FILES['file']['type'][$key]]) )
-                {   // Good MIME
-                    $name = $_FILES['file']['name'][$key];
-                    move_uploaded_file($_FILES['file']['tmp_name'][$key], WWW_ROOT . 'files'. DS .'temp' . DS . $name);
-
-                }   //ToDo: Handle un allowed error
-
-            }
-        }
-
-        return json_encode($results);
-    }
-
-    // OG = opengraph 
-    function og_view($o_id = null)
-    {
-        //  pr($o_id);
-        $meta = array();
-
-        $r = $this->_curlWrap("/observations/{$o_id}.json?locale=iw", null , 'GET');
-
-        //  Set Item Title
-        $meta['og:title'] = "תצפית: ";
-        if(isset($r->taxon)) $meta['og:title'] .= addslashes($r->taxon->default_name->name);
-
-        $meta['og:title'] .= " | " . $r->species_guess;
-
-        //  Images
-        if($r->observation_photos_count > 0) $meta['og:image'] = $r->observation_photos[0]->photo->large_url;
-
-        //  Description
-        $meta['og:description'] = '';
-        if(isset($r->description))  $meta['og:description'] = addcslashes($r->description) . " | ";
-        $meta['og:description'] .= 'תצפיטבע - קהילה מנטרת טבע בגולן.';
-
-        $this->set('meta', $meta);
-
-    }
-
-
-    function stats_index()
+    function index()
     {
 
          // count user in project

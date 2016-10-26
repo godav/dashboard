@@ -33,34 +33,34 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
 	public $components = array('Session');
 	// header menu service var
-	public $headerMenu = array(
-		'projects' 	=> '',
-		'news' 		=> '',
-		'links' 	=> '',
-		'pics' 		=> '',
-		'curators' 	=> '',
-		'articles' 	=> '',
-		'texts'		=> ''
-	);
-
-	// list of agents to match as open-graph / SEO?
-	var $ogAgents = array( 
-		// accepts regex patterns
-		// '/^Mozilla/',	// this is for testing!
-		'/^facebookexternalhit/',
-		'/^Twitterbot/',
-		'/^Pinterest/',
-		'/^Googlebot/',
-		'/WhatsApp/',
-		);
-	// for OG to work, you need to list which objects support it
-	var $ogAllow = array(
-		// 'object' => array('action1' => 1 (yes),'action2' => 0 (no) ...)
-		'obs' 		=> array('view' => 1),
-		'projects' 	=> array('view' => 1),
-		'users' 	=> array('view' => 1),
-		'news' 		=> array('view' => 1),
-		);
+//	public $headerMenu = array(
+//		'projects' 	=> '',
+//		'news' 		=> '',
+//		'links' 	=> '',
+//		'pics' 		=> '',
+//		'curators' 	=> '',
+//		'articles' 	=> '',
+//		'texts'		=> ''
+//	);
+//
+//	// list of agents to match as open-graph / SEO?
+//	var $ogAgents = array( 
+//		// accepts regex patterns
+//		// '/^Mozilla/',	// this is for testing!
+//		'/^facebookexternalhit/',
+//		'/^Twitterbot/',
+//		'/^Pinterest/',
+//		'/^Googlebot/',
+//		'/WhatsApp/',
+//		);
+//	// for OG to work, you need to list which objects support it
+//	var $ogAllow = array(
+//		// 'object' => array('action1' => 1 (yes),'action2' => 0 (no) ...)
+//		'obs' 		=> array('view' => 1),
+//		'projects' 	=> array('view' => 1),
+//		'users' 	=> array('view' => 1),
+//		'news' 		=> array('view' => 1),
+//		);
 
 	// iNat Server Connection vars
     var $iNat = array (
@@ -72,7 +72,7 @@ class AppController extends Controller {
 	function beforeFilter()
     {
     	// missing session voodoo, otherwise we loose the bearer token each reload
-    	$b = $this->Session->read('bearer');
+//    	$b = $this->Session->read('bearer');
     	// pr($b);
 
 
@@ -94,70 +94,70 @@ class AppController extends Controller {
 		        //  Allow Cross domain for development, will allow angular app to access class from localhost:3000
 				/**/
 
-				if (Configure::read('debug'))
-				{
-
-					if(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == "3000")
-					{
-
-						$this->response->header( 'Access-Control-Allow-Origin', '*' );
-						$this->Session->write('bearer', '93f32e978676fe232e7edc7d26483090b0b45a4cd0289b6aa9c30eb95430cbee');
-					}
-				}
-				/**/
+//				if (Configure::read('debug'))
+//				{
+//
+//					if(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == "3000")
+//					{
+//
+//						$this->response->header( 'Access-Control-Allow-Origin', '*' );
+//						$this->Session->write('bearer', '93f32e978676fe232e7edc7d26483090b0b45a4cd0289b6aa9c30eb95430cbee');
+//					}
+//				}
+//				/**/
 
 
 	        }
 
 	        // OG is for open-graph output
-	        if( $this->params['prefix'] == 'og' )
-			{
-				$this->layout = 'opengraph'; //TODO: make the OG layout!
-				// TODO: can catch non-allowed URLS and remove the /og/ prefix! WOOT!
-			}
+//	        if( $this->params['prefix'] == 'og' )
+//			{
+//				$this->layout = 'opengraph'; //TODO: make the OG layout!
+//				// TODO: can catch non-allowed URLS and remove the /og/ prefix! WOOT!
+//			}
 
 	        // admin prefix = control
-	        if( $this->params['prefix'] == 'control')
-	        {
-	        	$this->layout = 'admin';
-	        	$this->set('title_for_layout', 'ממשק ניהול');
-
-	        	// do HTTP basic auth for /control urls
-	            // as we cannot do it on the Apache level
-	            $reqAuth = 1;
-	            // allowed user/md5(pass) combinations
-	            $allowedUsers = array(
-	                'dan'   => 'af0e955f2fad4a5a62e5494c50e66ae1',
-	                'assi'  => '0ebb1e4ad15f8f1099bb38d01fa35bc5',
-	                'ofer'  => '09479837fba17f6fc0086fe31923f22b',
-	                'oarazy'  => '87449aba96d52649b37c656d268bf541',
-	                'ariel' => 'b2dd880eb4fe67bb3969a5b00de2b1e0',
-		            'carmel'=> '9acb44549b41563697bb490144ec6258'
-	                );
-
-	            if( !empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) )
-	            {
-	                // we have login info, and its good
-	                if( !empty($allowedUsers[$_SERVER['PHP_AUTH_USER']]) &&
-	                    $allowedUsers[$_SERVER['PHP_AUTH_USER']] == md5($_SERVER['PHP_AUTH_PW'])
-	                    )
-	                    $reqAuth = 0; // all good, can continue onward
-	            }
-
-	            // unless otherwise defined, request auth
-	            if( $reqAuth )
-	            {
-	                header('WWW-Authenticate: Basic realm="Tatzpiteva"');
-	                header('HTTP/1.0 401 Unauthorized');
-	                echo 'Authentication Required!';
-	                $this->layout = 'ajax';
-	                exit;
-	            }
-	        }
+//	        if( $this->params['prefix'] == 'control')
+//	        {
+//	        	$this->layout = 'admin';
+//	        	$this->set('title_for_layout', 'ממשק ניהול');
+//
+//	        	// do HTTP basic auth for /control urls
+//	            // as we cannot do it on the Apache level
+//	            $reqAuth = 1;
+//	            // allowed user/md5(pass) combinations
+//	            $allowedUsers = array(
+//	                'dan'   => 'af0e955f2fad4a5a62e5494c50e66ae1',
+//	                'assi'  => '0ebb1e4ad15f8f1099bb38d01fa35bc5',
+//	                'ofer'  => '09479837fba17f6fc0086fe31923f22b',
+//	                'oarazy'  => '87449aba96d52649b37c656d268bf541',
+//	                'ariel' => 'b2dd880eb4fe67bb3969a5b00de2b1e0',
+//		            'carmel'=> '9acb44549b41563697bb490144ec6258'
+//	                );
+//
+//	            if( !empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) )
+//	            {
+//	                // we have login info, and its good
+//	                if( !empty($allowedUsers[$_SERVER['PHP_AUTH_USER']]) &&
+//	                    $allowedUsers[$_SERVER['PHP_AUTH_USER']] == md5($_SERVER['PHP_AUTH_PW'])
+//	                    )
+//	                    $reqAuth = 0; // all good, can continue onward
+//	            }
+//
+//	            // unless otherwise defined, request auth
+//	            if( $reqAuth )
+//	            {
+//	                header('WWW-Authenticate: Basic realm="Tatzpiteva"');
+//	                header('HTTP/1.0 401 Unauthorized');
+//	                echo 'Authentication Required!';
+//	                $this->layout = 'ajax';
+//	                exit;
+//	            }
+//	        }
 			
-			if( $this->params['prefix'] == 'stats') {
-				$this->layout = 'stats';
-			}
+//			if( $this->params['prefix'] == 'stats') {
+//				$this->layout = 'stats';
+//			}
 	    }
     	else
     	{ 
@@ -168,44 +168,46 @@ class AppController extends Controller {
 			//pr($this->params->controller);
 			//pr($this->params->action);
 	    	// try to match them
-	    	foreach( $this->ogAgents as $OG )
-	    	{
-	    		// 	pr($OG);
-	    		if( preg_match($OG, $_SERVER['HTTP_USER_AGENT']) )
-	    		{
-	    			// pr("Matched USER_AGENT: $OG");
+//	    	foreach( $this->ogAgents as $OG )
+//	    	{
+//	    		// 	pr($OG);
+//	    		if( preg_match($OG, $_SERVER['HTTP_USER_AGENT']) )
+//	    		{
+//	    			// pr("Matched USER_AGENT: $OG");
+//
+//	    			// check if we're on the ogAllow list
+//	    			if( !empty($this->ogAllow[$this->params->controller]) && // controller is supported
+//	    				!empty($this->ogAllow[$this->params->controller][$this->params->action]) // action is supported too
+//	    				)
+//	    			{
+//	    				// this controller/action is supported
+//	    				// redirect to the same URL, but wit OG prefix
+//	    				$this->redirect("/og/{$this->params->url}");
+//	    			}
+//	    			// first match, we're done
+//	    			break;
+//	    		}
+//	    	}
 
-	    			// check if we're on the ogAllow list
-	    			if( !empty($this->ogAllow[$this->params->controller]) && // controller is supported
-	    				!empty($this->ogAllow[$this->params->controller][$this->params->action]) // action is supported too
-	    				)
-	    			{
-	    				// this controller/action is supported
-	    				// redirect to the same URL, but wit OG prefix
-	    				$this->redirect("/og/{$this->params->url}");
-	    			}
-	    			// first match, we're done
-	    			break;
-	    		}
-	    	}
-
+            $this->layout = 'stats';
+            
 	        //  Get Init Data
 	        $data = $this->appInitData();
 	        $this->set('globalData', $data);
     	}
     }
 
-    function beforeRender()
-    {
-        $this->set('headerMenu', $this->headerMenu);
-    }
+//    function beforeRender()
+//    {
+//        $this->set('headerMenu', $this->headerMenu);
+//    }
 
     // shortcut flash
-	function _flash($msg = '',$type = 'success')
-	{
-		// type = success, info, warning, danger, (primary?, default?)
-		$this->Session->setFlash($msg,'flash',array( 'class' => "alert-$type") );
-	}
+//	function _flash($msg = '',$type = 'success')
+//	{
+//		// type = success, info, warning, danger, (primary?, default?)
+//		$this->Session->setFlash($msg,'flash',array( 'class' => "alert-$type") );
+//	}
 
 	//  Get necessary initiation data for angular app
 	function appInitData(){
@@ -218,14 +220,14 @@ class AppController extends Controller {
 		$ProjectsCtrl = new ProjectsController;
 
 		//  Load Curator
-		App::import('Controller', 'Curators');
-		$CuratorCtrl = new CuratorsController;
+//		App::import('Controller', 'Curators');
+//		$CuratorCtrl = new CuratorsController;
 
 		$projects = $ProjectsCtrl->json_index(false);
 
 		$data = array(
 			'aToken'    => $this->Session->read('bearer'),
-			'curators'  => $CuratorCtrl->json_index(false),
+//			'curators'  => $CuratorCtrl->json_index(false),
 			'projects'  => $projects,
 			'defaultProjects'   => array(4527), //  tatzpiteva
 			'backUrl'   => $backUrl,
@@ -271,25 +273,25 @@ class AppController extends Controller {
 		return 1;
 	}
 
-	function json_about(){
-
-		//  Load Project Controller
-		App::import('Controller', 'Pics');
-		$PicsCtrl = new PicsController;
-		$pics = $PicsCtrl->json_index(false);
-
-		//  Load Project Controller
-		App::import('Controller', 'News');
-		$NewsCtrl = new NewsController;
-		$news = $NewsCtrl->json_index(false, 6);
-
-		return json_encode(
-			array(
-				'pics'	=> $pics,
-				'news'	=> $news
-			)
-		);
-	}
+//	function json_about(){
+//
+//		//  Load Project Controller
+//		App::import('Controller', 'Pics');
+//		$PicsCtrl = new PicsController;
+//		$pics = $PicsCtrl->json_index(false);
+//
+//		//  Load Project Controller
+//		App::import('Controller', 'News');
+//		$NewsCtrl = new NewsController;
+//		$news = $NewsCtrl->json_index(false, 6);
+//
+//		return json_encode(
+//			array(
+//				'pics'	=> $pics,
+//				'news'	=> $news
+//			)
+//		);
+//	}
 
 	// curl wrapper to connect to iNat Server
     function _curlWrap($url, $json, $action, $decodeResults = true)

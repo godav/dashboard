@@ -2115,11 +2115,61 @@ $(function () {
           renderTo: place,
            reflow: true,
           events: {
-                drilldown: function(e) {
+//                redraw: function () {
+//                
+//             
+//                console.log(graph.series[0].data.length);
+//                    if ( graph.series[0].data.length >= 40 && graph.series[0].data.length >= 80)
+//                         graph.xAxis[0].update ({labels: { step : 2 }});
+//                    else if ( graph.series[0].data.length >= 81 && graph.series[0].data.length >= 150)
+//                         graph.xAxis[0].update ({labels: { step : 4 }}); 
+//                     else if (graph.series[0].data.length > 151 && graph.series[0].data.length >= 300)
+//                         graph.xAxis[0].update ({labels: { step : 6 }});
+//                     else if (graph.series[0].data.length > 301)
+//                         graph.xAxis[0].update ({labels: { step : 8 }});
+//                },
+                
+                    
+                  drilldown: function(e) {
+                   console.log(e);
                     graph.setTitle({ text: level1Title + ' <b>' + e.point.name + '</b>'});
+                    
+               
+                    if (  e.seriesOptions.data.length <= 40)
+                    {                     
+                         graph.xAxis[0].update ({labels: { step : 1 ,style:{ cursor: 'default',
+                                                                                    color: 'black',
+                                                                                    fontWeight: 'normal',
+                                                                                    textDecoration: 'none'  }}});
+                     } else  if ( e.seriesOptions.data.length >= 41 && e.seriesOptions.data.length <= 80)
+                    {                     
+                         graph.xAxis[0].update ({labels: { step : 2 ,style:{ cursor: 'default',
+                                                                                    color: 'black',
+                                                                                    fontWeight: 'normal',
+                                                                                    textDecoration: 'none'  }}});
+                     }                    
+                    else if ( e.seriesOptions.data.length >= 81 && e.seriesOptions.data.length <= 150)
+                         graph.xAxis[0].update ({labels: { step : 4 ,style:{ cursor: 'default',
+                                                                                    color: 'black',
+                                                                                    fontWeight: 'normal',
+                                                                                    textDecoration: 'none'  }}});
+                     else if (e.seriesOptions.data.length > 151 && e.seriesOptions.data.length <= 300)
+                         graph.xAxis[0].update ({labels: { step : 15 ,style:{ cursor: 'default',
+                                                                                    color: 'black',
+                                                                                    fontWeight: 'normal',
+                                                                                    textDecoration: 'none'  }}});
+                     else if (e.seriesOptions.data.length > 301)
+                         graph.xAxis[0].update ({labels: { step : 20 ,style:{ cursor: 'default',
+                                                                                    color: 'black',
+                                                                                    fontWeight: 'normal',
+                                                                                    textDecoration: 'none'  }}});
                 },
                 drillup: function(e) {
                     graph.setTitle({ text: title });
+                    graph.xAxis[0].update ({labels: { step : 1 ,style:{ cursor: 'pointer',
+                                                                                    color: 'black',
+                                                                                    fontWeight: 'bold',
+                                                                                    textDecoration: 'underline'  }}});                                         
                 }
             }
         },
@@ -2130,11 +2180,23 @@ $(function () {
           text:  subTitle
         },
         xAxis: {
-          type: 'category',
-          labels: {
+          type: 'category',             
+          labels: {             
                 x: 0,
                 y: 35,
-                align:'center'
+                align:'center',
+//                formatter: function() { return this.value;},
+                enabled: true
+//                style: {
+//                    color: 'black',
+//                    textDecoration: 'none',
+//                    cursor: 'default',
+//                    fontWeight: 'normal'   
+//                    
+//                } formatter: function () {
+//                    return '<a href="' + categoryLinks[this.value] + '">' +
+//                        this.value + '</a>';
+//                }
           }
         },
         yAxis: {
@@ -2173,6 +2235,12 @@ $(function () {
           data: data
         }],
         drilldown: {
+            activeAxisLabelStyle: {
+                cursor: 'pointer',
+                color: '#0d233a',
+                fontWeight: 'bold',
+                textDecoration: 'underline'          
+            },
             drillUpButton: {
                 relativeTo: 'plotBox',
                 position: {
@@ -2574,7 +2642,7 @@ $(function () {
          if (markers.length > 0)
              _clear_markers();
              
-        var bounds = new google.maps.LatLngBounds();
+        bounds = new google.maps.LatLngBounds();
         
         // Info Window Content
         var infoWindowContent = [];
@@ -2960,31 +3028,31 @@ $(function () {
 //           $('#left-main').removeClass('col-lg-3');
            $('#left-main').addClass('shrink');
            
-            var count = 0 ;
-            var refreshIntervalId = setInterval(function() {
+            var countE = 0 ;
+            var IntervalExpand = setInterval(function() {
                 if (tabOn===0)
-                $("#graph-container").highcharts().reflow();
+                     $("#graph-container").highcharts().reflow();
                else{
-                google.maps.event.trigger(map,'resize');
-                map.fitBounds(bounds);
-             }
+                    google.maps.event.trigger(map,'resize');
+                    map.fitBounds(bounds);
+               }
              $('#main-resize').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  count++;
+                  countE++;
 
               });
               $('#right-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  count++;
+                  countE++;
 
               });
              $('#left-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  count++;
+                  countE++;
 
               });
-              if (count >=3)
-                  clearInterval(refreshIntervalId);
+              if (countE >=3)
+                  clearInterval(IntervalExpand);
              }, 0.5);
 
            
@@ -2998,8 +3066,8 @@ $(function () {
          }else 
          {
            
-            var count = 0 ;
-            var refreshIntervalId = setInterval(function() {
+            var countM = 0 ;
+            var IntervalMinimize = setInterval(function() {
                 if (tabOn===0)
                 $("#graph-container").highcharts().reflow();
                else{
@@ -3008,21 +3076,21 @@ $(function () {
              }
              $('#main-resize').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  count++;
+                  countM++;
 
               });
               $('#right-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  count++;
+                  countM++;
 
               });
              $('#left-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  count++;
+                  countM++;
 
               });
-              if (count >=3)
-                  clearInterval(refreshIntervalId);
+              if (countM >=3)
+                  clearInterval(IntervalMinimize);
              }, 0.5);  
              
            $('#projects-btn').remove();
