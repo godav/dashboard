@@ -1607,7 +1607,7 @@ $(function () {
                     var sData =Array();
                     groups[iconic]['Taxons'].forEach(function (arrayItem){
 
-                        sData.push(new Array(arrayItem.name,arrayItem.taxObs));
+                        sData.push({name: arrayItem.name,y: arrayItem.taxObs});
                     });    
                     // build the object for the main taxa
                     var d ={name: converateIconName(iconic),
@@ -1618,6 +1618,8 @@ $(function () {
                     var s = {name: converateIconName(iconic),
                              id: iconic,
                              data: sData
+                          //   pointInterval: 80 //
+//                             labels: { step : 10 }
                             };
 
                     data.push(d);
@@ -2143,7 +2145,8 @@ $(function () {
                                                                                     textDecoration: 'none'  }}});
                      } else  if ( e.seriesOptions.data.length >= 41 && e.seriesOptions.data.length <= 80)
                     {                     
-                         graph.xAxis[0].update ({labels: { step : 2 ,style:{ cursor: 'default',
+                         graph.xAxis[0].update (
+                                 {labels: { step : 2 ,style:{ cursor: 'default',
                                                                                     color: 'black',
                                                                                     fontWeight: 'normal',
                                                                                     textDecoration: 'none'  }}});
@@ -2159,14 +2162,16 @@ $(function () {
                                                                                     fontWeight: 'normal',
                                                                                     textDecoration: 'none'  }}});
                      else if (e.seriesOptions.data.length > 301)
-                         graph.xAxis[0].update ({labels: { step : 20 ,style:{ cursor: 'default',
+                         graph.xAxis[0].update (
+                             {labels: { step : 20 ,style:{ cursor: 'default',
                                                                                     color: 'black',
                                                                                     fontWeight: 'normal',
                                                                                     textDecoration: 'none'  }}});
                 },
                 drillup: function(e) {
                     graph.setTitle({ text: title });
-                    graph.xAxis[0].update ({labels: { step : 1 ,style:{ cursor: 'pointer',
+                    graph.xAxis[0].update (
+                            {labels: { step : 1 ,style:{ cursor: 'pointer',
                                                                                     color: 'black',
                                                                                     fontWeight: 'bold',
                                                                                     textDecoration: 'underline'  }}});                                         
@@ -2180,12 +2185,13 @@ $(function () {
           text:  subTitle
         },
         xAxis: {
-          type: 'category',             
+          type: 'category', 
+       
           labels: {             
                 x: 0,
                 y: 35,
                 align:'center',
-//                formatter: function() { return this.value;},
+              //  formatter: function() {console.log(this); return this.value;},
                 enabled: true
 //                style: {
 //                    color: 'black',
@@ -2208,8 +2214,10 @@ $(function () {
           enabled: false
         },
         plotOptions: {
+            
           series: {
             borderWidth: 0,
+
             dataLabels: {
               enabled: true,
               format: '{point.y:.0f}',
@@ -2261,6 +2269,11 @@ $(function () {
         }
       });
     }
+    
+    $(".highcharts-axis-labels text, .highcharts-axis-labels span").click(function() {
+       alert();
+    });
+    
     
     Highcharts.setOptions({lang: {noData: "אין מידע לתצוגה"}, noData: {style: {
                                             fontWeight: 'bold',
