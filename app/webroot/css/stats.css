@@ -615,6 +615,7 @@ tooltip, drillUpText, dataLabels, drillUpButton,noData,legend{
         position: relative;
         height: 667px !important;
         width: 100% !important;
+        overflow-x: hidden;
 
     }
     
@@ -1141,4 +1142,55 @@ input::-webkit-input-placeholder {
          right: 50%;
          font-size: 1.5em;    
 	/*transform-origin: left top 0;*/
+}
+
+.department { 
+    font-size: 40px; 
+    font-weight: bold;
+    width: 48%;
+    display: inline-block;
+    text-align: center;
+    height: 60px;
+    
+
+}
+
+.rights { 
+    font-size: 14px; 
+    font-weight: bold;
+    width: 25%;
+     display: table;
+     float: left;
+     height: 60px;
+     text-align: left;
+     color: #ddd;
+}
+
+.rights span{
+     display: table-cell;
+     vertical-align: bottom;
+     padding-bottom: 5px;
+     padding-left: 10px;
+}
+
+
+.uni {     
+    width: 25%;
+    display: inline-block;
+    float: right;
+    height: 60px;
+
+}
+
+.uni img{
+     padding-right:  10px;
+}
+
+#main-footer{
+    height: 60px;
+    font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Helvetica,sans-serif;
+    margin-left: -5px;
+    margin-right: -5px;
+    position :  relative;
+   
 }

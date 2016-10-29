@@ -1607,7 +1607,7 @@ $(function () {
                     var sData =Array();
                     groups[iconic]['Taxons'].forEach(function (arrayItem){
 
-                        sData.push({name: arrayItem.name,y: arrayItem.taxObs});
+                        sData.push([arrayItem.name, arrayItem.taxObs]);
                     });    
                     // build the object for the main taxa
                     var d ={name: converateIconName(iconic),
@@ -1618,6 +1618,7 @@ $(function () {
                     var s = {name: converateIconName(iconic),
                              id: iconic,
                              data: sData
+//                              pointInterval: 80 // one hour
                           //   pointInterval: 80 //
 //                             labels: { step : 10 }
                             };
@@ -2110,71 +2111,35 @@ $(function () {
     Highcharts.setOptions({lang: {drillUpText: '< ' + 'חזרה לגרף: {series.name}'
                                         }
                                     });
-        
+
         graph = new Highcharts.Chart({
         chart: {
           type: 'column',
           renderTo: place,
            reflow: true,
+           useHTML: true,
           events: {
-//                redraw: function () {
-//                
-//             
-//                console.log(graph.series[0].data.length);
-//                    if ( graph.series[0].data.length >= 40 && graph.series[0].data.length >= 80)
-//                         graph.xAxis[0].update ({labels: { step : 2 }});
-//                    else if ( graph.series[0].data.length >= 81 && graph.series[0].data.length >= 150)
-//                         graph.xAxis[0].update ({labels: { step : 4 }}); 
-//                     else if (graph.series[0].data.length > 151 && graph.series[0].data.length >= 300)
-//                         graph.xAxis[0].update ({labels: { step : 6 }});
-//                     else if (graph.series[0].data.length > 301)
-//                         graph.xAxis[0].update ({labels: { step : 8 }});
-//                },
-                
+                drilldown: function(e) {
+                    console.log(graph.series[0].data[0]);
                     
-                  drilldown: function(e) {
-                   console.log(e);
                     graph.setTitle({ text: level1Title + ' <b>' + e.point.name + '</b>'});
-                    
-               
-                    if (  e.seriesOptions.data.length <= 40)
-                    {                     
-                         graph.xAxis[0].update ({labels: { step : 1 ,style:{ cursor: 'default',
-                                                                                    color: 'black',
-                                                                                    fontWeight: 'normal',
-                                                                                    textDecoration: 'none'  }}});
-                     } else  if ( e.seriesOptions.data.length >= 41 && e.seriesOptions.data.length <= 80)
-                    {                     
-                         graph.xAxis[0].update (
-                                 {labels: { step : 2 ,style:{ cursor: 'default',
-                                                                                    color: 'black',
-                                                                                    fontWeight: 'normal',
-                                                                                    textDecoration: 'none'  }}});
-                     }                    
-                    else if ( e.seriesOptions.data.length >= 81 && e.seriesOptions.data.length <= 150)
-                         graph.xAxis[0].update ({labels: { step : 4 ,style:{ cursor: 'default',
-                                                                                    color: 'black',
-                                                                                    fontWeight: 'normal',
-                                                                                    textDecoration: 'none'  }}});
-                     else if (e.seriesOptions.data.length > 151 && e.seriesOptions.data.length <= 300)
-                         graph.xAxis[0].update ({labels: { step : 15 ,style:{ cursor: 'default',
-                                                                                    color: 'black',
-                                                                                    fontWeight: 'normal',
-                                                                                    textDecoration: 'none'  }}});
-                     else if (e.seriesOptions.data.length > 301)
-                         graph.xAxis[0].update (
-                             {labels: { step : 20 ,style:{ cursor: 'default',
-                                                                                    color: 'black',
-                                                                                    fontWeight: 'normal',
-                                                                                    textDecoration: 'none'  }}});
+                     graph.xAxis[0].update (
+                                 {labels: {style:{ cursor: 'default',
+                                                           color: 'black',
+                                                           fontWeight: 'normal',
+                                                           textDecoration: 'none'  }}});    
                 },
                 drillup: function(e) {
+                    console.log(graph.series[0].data[0]);
                     graph.setTitle({ text: title });
-                    graph.xAxis[0].update (
-                            {labels: { step : 1 ,style:{ cursor: 'pointer',
-                                                                                    color: 'black',
-                                                                                    fontWeight: 'bold',
-                                                                                    textDecoration: 'underline'  }}});                                         
+                   
+                     graph.xAxis[0].update (
+                            {tickInterval: 1,  labels: { style:{ cursor: 'pointer',
+                                                                 color: 'black',
+                                                                 fontWeight: 'bold',
+                                                                 textDecoration: 'underline'  }}}); 
+                                                  
+//                     graph.redraw();                                
                 }
             }
         },
@@ -2185,24 +2150,22 @@ $(function () {
           text:  subTitle
         },
         xAxis: {
-          type: 'category', 
-       
-          labels: {             
+          type: 'category',
+          labels: {
                 x: 0,
                 y: 35,
                 align:'center',
-              //  formatter: function() {console.log(this); return this.value;},
-                enabled: true
-//                style: {
-//                    color: 'black',
-//                    textDecoration: 'none',
-//                    cursor: 'default',
-//                    fontWeight: 'normal'   
-//                    
-//                } formatter: function () {
-//                    return '<a href="' + categoryLinks[this.value] + '">' +
-//                        this.value + '</a>';
-//                }
+                useHTML: true,
+                    
+                formatter: function () {
+
+                    
+                    var str = this.value;
+                    if (isNaN(str))
+                         return this.value;
+                    else 
+                        return '';
+                 }
           }
         },
         yAxis: {
@@ -2214,10 +2177,8 @@ $(function () {
           enabled: false
         },
         plotOptions: {
-            
           series: {
             borderWidth: 0,
-
             dataLabels: {
               enabled: true,
               format: '{point.y:.0f}',
@@ -2243,12 +2204,12 @@ $(function () {
           data: data
         }],
         drilldown: {
-            activeAxisLabelStyle: {
-                cursor: 'pointer',
-                color: '#0d233a',
-                fontWeight: 'bold',
-                textDecoration: 'underline'          
-            },
+//            activeAxisLabelStyle: {
+//                cursor: 'pointer',
+//                color: 'black',
+//                fontWeight: 'bold',
+//                textDecoration: 'underline'          
+//            },
             drillUpButton: {
                 relativeTo: 'plotBox',
                 position: {
@@ -2268,11 +2229,134 @@ $(function () {
 
         }
       });
-    }
+    }        
+        
+//        graph = new Highcharts.Chart({
+//        chart: {
+//          type: 'column',
+//          renderTo: place,
+//          reflow: true,
+//          events: {
+//
+//                  
+//                  drilldown: function(e) {
+//
+//                 graph.xAxis[0].options.labels.rotation = -45;
+//               graph.setTitle({ text: level1Title + ' <b>' + e.point.name + '</b>'});
+//               graph.xAxis[0].update (
+//                                 {labels: {style:{ cursor: 'default',
+//                                                           color: 'black',
+//                                                           fontWeight: 'normal',
+//                                                           textDecoration: 'none'  }}});    
+//               graph.redraw();                                           
+//                 
+//
+//                },
+//                drillup: function(e) {
+//                     graph.xAxis[0].options.labels.rotation = 0;
+//                    graph.setTitle({ text: title });
+//                    graph.xAxis[0].update (
+//                            {labels: { style:{ cursor: 'pointer',
+//                                                                 color: 'black',
+//                                                                 fontWeight: 'bold',
+//                                                                 textDecoration: 'underline'  }}});  
+////                  graph.redraw();                                     
+//                }
+//            }
+//        },
+//        title: {
+//          text: title
+//        },
+//        subtitle: {
+//          text:  subTitle
+//        },
+//        xAxis: {
+//          type: 'category', 
+//       
+//          labels: {   
+//             
+//                x: 0,
+//                y: 35,
+//                align:'center',
+//                 formatter: function () {
+//                    var str = this.value;
+//                    if (isNaN(str))
+//                         return this.value;
+//                    else 
+//                        return '';
+//                 },
+//                enabled: true
+//
+//          }
+//        },
+//        yAxis: {
+//          title: {
+//            text: yTitle
+//          }
+//        },
+//        legend: {
+//          enabled: false
+//        },
+//        plotOptions: {
+//            
+//          series: {
+//            borderWidth: 0,
+//
+//            dataLabels: {
+//              enabled: true,
+//              format: '{point.y:.0f}',
+//              useHTML: true,
+//              inside: true
+//            }
+//          }         
+//        },
+//
+//        tooltip: {
+//             formatter: function() {
+//                 if(this.series.options.level === 1)  
+//                    return 'סך של: ' + '<b> '+ this.y + '</b> ' + level1  +  ' - <b>'+ this.point.name +'</b>'  ;        
+//                 else
+//                    return 'סך של: ' + '<b> '+ this.y + '</b> ' + level0  +  ' - <b>'+ this.point.name +'</b>'  ; 
+//            },
+//            useHTML: true
+//        },
+//
+//        series: [{
+//          name: series_name,
+//          colorByPoint: true,
+//          data: data
+//        }],
+//        drilldown: {
+//            activeAxisLabelStyle: {
+//                cursor: 'pointer',
+//                color: 'black',
+//                fontWeight: 'bold',
+//                textDecoration: 'underline'          
+//            },
+//            drillUpButton: {
+//                relativeTo: 'plotBox',
+//                position: {
+//                    y: 0,
+//                    x: 0
+//                },
+//                theme: {
+//                    style: {
+//                        margin: 0,
+//                        padding: 0,
+//                        direction: 'ltr'
+//                    }                  
+//                }
+//            },
+//          
+//             series: series 
+//
+//        }
+//      });
+//    }
     
-    $(".highcharts-axis-labels text, .highcharts-axis-labels span").click(function() {
-       alert();
-    });
+//    $(".highcharts-axis-labels text, .highcharts-axis-labels span").click(function() {
+//       alert();
+//    });
     
     
     Highcharts.setOptions({lang: {noData: "אין מידע לתצוגה"}, noData: {style: {

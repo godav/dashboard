@@ -12,7 +12,7 @@
        
 	<?php 
             echo $this->Html->css(array('/css/vendor', '/css/app','/css/stats' ,'/css/bootstrap.min'));         
-            echo $this->Html->script(array('/js/jquery-1.11.0','/js/jquery-2.2.3.min','/js/bootstrap.min','/js/highcharts','/js/highcharts-3d','/js/exporting','/js/drilldown','/js/no-data-to-display'));
+            echo $this->Html->script(array('/js/jquery-1.11.0','/js/jquery-2.2.3.min','/js/bootstrap.min','/js/highcharts','/js/highcharts-3d','/js/exporting','/js/drilldown','/js/data','/js/no-data-to-display'));
         ?>
 
 </head>
@@ -23,7 +23,7 @@
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<div ui-view="main"></div>
+
 <div ui-view="stats-view">
 	<div class="main container-fluid">
 		<?php 

@@ -274,13 +274,26 @@
             <!-- /#taxa-list -->       
     </div>            
     <!-- /.col-lg-3 -->
+
+
+
     
 </div>
 <!-- /.row -->
 
+    <div class="row" style="margin-top:15px; margin-left: 0; margin-right: 0; height: 60px;">
+        <div class="panel panel-default" id="main-footer">
+            <div class="col-lg-3 uni"><img src='assets/images/uni.png'></div>
+            <div class="col-lg-6 department">החוג למערכות מידע</div>
+            <div class="col-lg-3 rights"><span >נוצר על ידי: אבנר אינוז</span></div>
+        </div>  
+
+    </div>
+    <!-- /.row -->
+
 <script>
    
-    
+   
     var projectsGlobal = '<?php echo json_encode($projects); ?>';
   
     
