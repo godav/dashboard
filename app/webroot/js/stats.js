@@ -23,7 +23,6 @@ $(function () {
   var project_jump = 0;
   var taxon_jump = 0;
   var graph;
-  var selectedProject;    // varible to hold the selected project pill to pressent related data
   var selectedPill = $("#All");                             // varible to hold the selected icon pill to pressent related taxa
   var selectedSeassion = null;
   var selectedProject = 4527;    // varible to hold the selected project pill to pressent related data
@@ -41,6 +40,26 @@ $(function () {
   
   function _refresh_panels()
   {
+      // refresh the projects panel display
+       if (selectedProject === undefined || selectedProject.length === 0)
+            current_project = +_repaint_projects(0) - +1;
+        else{
+           update_current_project();
+           current_project += _repaint_projects(current_project) - +1;
+        }
+             
+        if (filterd_projects[+current_project + +1] === undefined)
+           $("#projects-right").attr("disabled", true);
+        else
+           $("#projects-right").attr("disabled", false);
+         if (filterd_projects[current_project-(current_project%4)] === undefined || (current_project-(current_project%4))===0 )   
+             $("#projects-left").attr("disabled", true);
+        else
+             $("#projects-left").attr("disabled", false);
+         
+        $('#projects-body').removeClass('loading');
+      
+      // refresh the taxa panel display
       if (selectedTaxs === undefined || selectedTaxs.length === 0)
             current_taxon = +_repaint_taxons(0) - +1;
         else{
@@ -58,7 +77,8 @@ $(function () {
              $("#taxons-left").attr("disabled", false);
          
         $('#taxa-body').removeClass('loading');
-                                              
+      
+      // refresh the users panel display
        if (selectedUsers === undefined || selectedUsers.length === 0)
             current_user = +_repaint_users(0) - +1;
         else{
@@ -76,7 +96,8 @@ $(function () {
              $("#users-left").attr("disabled", false);
          
         $('#users-body').removeClass('loading');
-        
+   
+      // used for the resize display
         if ($('#taxa-list').hasClass('open'))
         {
             $('.u-hide').hide();
@@ -94,8 +115,7 @@ $(function () {
   }
   
   var refreshDataByProject = function(){
-           
-      _repaint_projects(0);
+      
       var options = {
       url :  statsByProject.ajaxUrl,
       dataType: 'json',
@@ -109,9 +129,7 @@ $(function () {
     };
        
     $.ajax(options).done(function (results) {
-       
-        $('#projects-body').removeClass('loading'); 
-       
+             
         selectedTaxs=[];
         selectedUsers=[];
         $(selectedSeassion).removeClass('active');
@@ -121,31 +139,13 @@ $(function () {
         filterd_taxons = results.taxons;     
         
       _repaint_sums(null,null,null);
-        
-        current_user = +_repaint_users(0) - +1;
-        if (filterd_users[+current_user + +1] === undefined)
-           $("#users-right").attr("disabled", true);
-        else
-           $("#users-right").attr("disabled", false);
-
-        $("#users-left").attr("disabled", true);
-       
-        $('#users-body').removeClass('loading');
-                  
+      
         $(selectedPill).removeClass('active');
         selectedPill = $("#All");
         selectedPill.addClass('active');
         
-        current_taxon = +_repaint_taxons(0) - +1;
-        if (filterd_taxons[+current_taxon + +1] === undefined)
-           $("#taxons-right").attr("disabled", true);
-        else
-           $("#taxons-right").attr("disabled", false);
-
-        $("#taxons-left").attr("disabled", true);       
-      
-        $('#taxa-body').removeClass('loading');
-    
+       _refresh_panels();
+           
     if ($('#taxa-list').hasClass('open'))
         {
             $('.u-hide').hide();
@@ -178,7 +178,6 @@ $(function () {
  
   var refreshDataByProjectIcon = function(){
 
-      _repaint_projects(0);
       var options = {
       url :  statsByProjectIcon.ajaxUrl,
       dataType: 'json',
@@ -193,9 +192,7 @@ $(function () {
     };
        
     $.ajax(options).done(function (results) {
-                  
-        $('#projects-body').removeClass('loading'); 
-       
+                        
         filterd_taxons = results.taxons;
         filterd_obs = results.observations;       
         filterd_users = results.users;
@@ -222,8 +219,7 @@ $(function () {
     
 
   var refreshDataByUserIcon = function(){
-      
-  
+        
     var options = {
       url : statsByUserIcon.ajaxUrl ,
       dataType: 'json',
@@ -238,9 +234,6 @@ $(function () {
      
     $.ajax(options).done(function (results) {
 
-        _repaint_projects(0);
-        $('#projects-body').removeClass('loading');
- 
         filterd_users = results.users;
         filterd_taxons = results.taxons;
         filterd_obs = results.observations;        
@@ -283,9 +276,6 @@ $(function () {
      
     $.ajax(options).done(function (results) {
 
-        _repaint_projects(0);
-        $('#projects-body').removeClass('loading');
- 
         filterd_users = results.users;
         filterd_taxons = results.taxons;
         filterd_obs = results.observations;        
@@ -327,10 +317,7 @@ $(function () {
     };
      
     $.ajax(options).done(function (results) {
-        
-        _repaint_projects(0);
-        $('#projects-body').removeClass('loading');
-        
+       
       filterd_users = results.users;
       filterd_obs = results.observations;
       filterd_taxons = results.taxons;
@@ -373,10 +360,7 @@ $(function () {
     };
      
     $.ajax(options).done(function (results) {
-      
-        _repaint_projects(0);
-         $('#projects-body').removeClass('loading');   
-         
+       
         filterd_users = results.users;
         filterd_obs = results.observations;
         filterd_taxons = results.taxons;
@@ -629,6 +613,18 @@ $(function () {
        current_taxon = 0;
     }
     
+    function update_current_project()
+    {
+       for (var key in filterd_projects) {
+            var obj = filterd_projects[key];
+            if($.inArray(parseInt(obj.id), selectedProject)>-1)   {           
+                current_project = (+key + +1)-((+key + +1)%4);
+               return false;
+           }
+       }
+       current_project = 0;
+    }
+    
     function check_taxon_empty()
     {
         var isEmpty = true;
@@ -738,6 +734,7 @@ $(function () {
    //------------------------------------ Handle Projects panel left and right -----------------------------------------   
     
     $("#projects-left").click(function(){
+                   
         var element = $(this);   
         if ( filterd_projects[+current_project - +project_jump] !== undefined ) {
             current_project = +current_project - +project_jump + +1;
@@ -773,22 +770,26 @@ $(function () {
     
     function _repaint_projects(start)
     {
-      $("#projects-right").attr("disabled", true);   
+        
      $("#projects-body").empty(); 
      for(var i = 0 ; i < 4 ; i++ )
      {
-    
         var item = filterd_projects[+start + +i];
         if (!item)
-        {  
+        {
             
-            
+            if (i===0)
+            {
+                $("#projects-body").append("<p style=\"font-weight: bold; color: red;\">אין פרויקטים לתצוגה</p>");
+                $("#footer-project").empty();
+                return i;
+            }    
             var from = +start + +1;
-            var to = +start + +i;
+            var to = +start + +i;           
             $("#footer-project").empty();
-            $("#footer-project").append("מציג " + from + " עד " + to );
+            $("#footer-project").append("מציג " + from + " עד "  + to );
             return i;
-        }
+        }   
         var projectImg = item.icon_url;      
         if(!projectImg)
                 projectImg = 'assets/images/no-pic.jpg';
@@ -817,19 +818,18 @@ $(function () {
 
         if(parseInt(item.id)=== selectedProject){
             $("#projects-body").find("[data-project-id='" + item.id + "']").addClass('selected'); 
-          
-        }
+        }    
       }  
-        
-        
-        
-            var from = +start + +1;
-            var to = +start + +4;
-            $("#footer-project").empty();
-            $("#footer-project").append("מציג " + from + " עד " + to );
+      $("#projects-body").fadeIn('fast');
       
-      $("#projects-body").fadeIn('slow');
-      return 4;
+      var from = +start + +1;
+      var to = +start + +4;
+    
+      $("#footer-project").empty();
+      $("#footer-project").append("מציג " + from + " עד "  + to );
+      
+      return 4; 
+                   
      }
      
     //------------------------------------ Handle taxons panel left and right -----------------------------------------    
@@ -1607,7 +1607,7 @@ $(function () {
                     var sData =Array();
                     groups[iconic]['Taxons'].forEach(function (arrayItem){
 
-                        sData.push([arrayItem.name, arrayItem.taxObs]);
+                        sData.push(new Array(arrayItem.name,arrayItem.taxObs));
                     });    
                     // build the object for the main taxa
                     var d ={name: converateIconName(iconic),
@@ -1618,9 +1618,6 @@ $(function () {
                     var s = {name: converateIconName(iconic),
                              id: iconic,
                              data: sData
-//                              pointInterval: 80 // one hour
-                          //   pointInterval: 80 //
-//                             labels: { step : 10 }
                             };
 
                     data.push(d);
@@ -2111,35 +2108,18 @@ $(function () {
     Highcharts.setOptions({lang: {drillUpText: '< ' + 'חזרה לגרף: {series.name}'
                                         }
                                     });
-
+        
         graph = new Highcharts.Chart({
         chart: {
           type: 'column',
           renderTo: place,
            reflow: true,
-           useHTML: true,
           events: {
                 drilldown: function(e) {
-                    console.log(graph.series[0].data[0]);
-                    
                     graph.setTitle({ text: level1Title + ' <b>' + e.point.name + '</b>'});
-                     graph.xAxis[0].update (
-                                 {labels: {style:{ cursor: 'default',
-                                                           color: 'black',
-                                                           fontWeight: 'normal',
-                                                           textDecoration: 'none'  }}});    
                 },
                 drillup: function(e) {
-                    console.log(graph.series[0].data[0]);
                     graph.setTitle({ text: title });
-                   
-                     graph.xAxis[0].update (
-                            {tickInterval: 1,  labels: { style:{ cursor: 'pointer',
-                                                                 color: 'black',
-                                                                 fontWeight: 'bold',
-                                                                 textDecoration: 'underline'  }}}); 
-                                                  
-//                     graph.redraw();                                
                 }
             }
         },
@@ -2154,18 +2134,7 @@ $(function () {
           labels: {
                 x: 0,
                 y: 35,
-                align:'center',
-                useHTML: true,
-                    
-                formatter: function () {
-
-                    
-                    var str = this.value;
-                    if (isNaN(str))
-                         return this.value;
-                    else 
-                        return '';
-                 }
+                align:'center'
           }
         },
         yAxis: {
@@ -2204,12 +2173,6 @@ $(function () {
           data: data
         }],
         drilldown: {
-//            activeAxisLabelStyle: {
-//                cursor: 'pointer',
-//                color: 'black',
-//                fontWeight: 'bold',
-//                textDecoration: 'underline'          
-//            },
             drillUpButton: {
                 relativeTo: 'plotBox',
                 position: {
@@ -2229,135 +2192,7 @@ $(function () {
 
         }
       });
-    }        
-        
-//        graph = new Highcharts.Chart({
-//        chart: {
-//          type: 'column',
-//          renderTo: place,
-//          reflow: true,
-//          events: {
-//
-//                  
-//                  drilldown: function(e) {
-//
-//                 graph.xAxis[0].options.labels.rotation = -45;
-//               graph.setTitle({ text: level1Title + ' <b>' + e.point.name + '</b>'});
-//               graph.xAxis[0].update (
-//                                 {labels: {style:{ cursor: 'default',
-//                                                           color: 'black',
-//                                                           fontWeight: 'normal',
-//                                                           textDecoration: 'none'  }}});    
-//               graph.redraw();                                           
-//                 
-//
-//                },
-//                drillup: function(e) {
-//                     graph.xAxis[0].options.labels.rotation = 0;
-//                    graph.setTitle({ text: title });
-//                    graph.xAxis[0].update (
-//                            {labels: { style:{ cursor: 'pointer',
-//                                                                 color: 'black',
-//                                                                 fontWeight: 'bold',
-//                                                                 textDecoration: 'underline'  }}});  
-////                  graph.redraw();                                     
-//                }
-//            }
-//        },
-//        title: {
-//          text: title
-//        },
-//        subtitle: {
-//          text:  subTitle
-//        },
-//        xAxis: {
-//          type: 'category', 
-//       
-//          labels: {   
-//             
-//                x: 0,
-//                y: 35,
-//                align:'center',
-//                 formatter: function () {
-//                    var str = this.value;
-//                    if (isNaN(str))
-//                         return this.value;
-//                    else 
-//                        return '';
-//                 },
-//                enabled: true
-//
-//          }
-//        },
-//        yAxis: {
-//          title: {
-//            text: yTitle
-//          }
-//        },
-//        legend: {
-//          enabled: false
-//        },
-//        plotOptions: {
-//            
-//          series: {
-//            borderWidth: 0,
-//
-//            dataLabels: {
-//              enabled: true,
-//              format: '{point.y:.0f}',
-//              useHTML: true,
-//              inside: true
-//            }
-//          }         
-//        },
-//
-//        tooltip: {
-//             formatter: function() {
-//                 if(this.series.options.level === 1)  
-//                    return 'סך של: ' + '<b> '+ this.y + '</b> ' + level1  +  ' - <b>'+ this.point.name +'</b>'  ;        
-//                 else
-//                    return 'סך של: ' + '<b> '+ this.y + '</b> ' + level0  +  ' - <b>'+ this.point.name +'</b>'  ; 
-//            },
-//            useHTML: true
-//        },
-//
-//        series: [{
-//          name: series_name,
-//          colorByPoint: true,
-//          data: data
-//        }],
-//        drilldown: {
-//            activeAxisLabelStyle: {
-//                cursor: 'pointer',
-//                color: 'black',
-//                fontWeight: 'bold',
-//                textDecoration: 'underline'          
-//            },
-//            drillUpButton: {
-//                relativeTo: 'plotBox',
-//                position: {
-//                    y: 0,
-//                    x: 0
-//                },
-//                theme: {
-//                    style: {
-//                        margin: 0,
-//                        padding: 0,
-//                        direction: 'ltr'
-//                    }                  
-//                }
-//            },
-//          
-//             series: series 
-//
-//        }
-//      });
-//    }
-    
-//    $(".highcharts-axis-labels text, .highcharts-axis-labels span").click(function() {
-//       alert();
-//    });
-    
+    }
     
     Highcharts.setOptions({lang: {noData: "אין מידע לתצוגה"}, noData: {style: {
                                             fontWeight: 'bold',
@@ -2739,7 +2574,7 @@ $(function () {
          if (markers.length > 0)
              _clear_markers();
              
-        bounds = new google.maps.LatLngBounds();
+        var bounds = new google.maps.LatLngBounds();
         
         // Info Window Content
         var infoWindowContent = [];
@@ -3125,31 +2960,31 @@ $(function () {
 //           $('#left-main').removeClass('col-lg-3');
            $('#left-main').addClass('shrink');
            
-            var countE = 0 ;
-            var IntervalExpand = setInterval(function() {
+            var count = 0 ;
+            var refreshIntervalId = setInterval(function() {
                 if (tabOn===0)
-                     $("#graph-container").highcharts().reflow();
+                $("#graph-container").highcharts().reflow();
                else{
-                    google.maps.event.trigger(map,'resize');
-                    map.fitBounds(bounds);
-               }
+                google.maps.event.trigger(map,'resize');
+                map.fitBounds(bounds);
+             }
              $('#main-resize').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  countE++;
+                  count++;
 
               });
               $('#right-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  countE++;
+                  count++;
 
               });
              $('#left-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  countE++;
+                  count++;
 
               });
-              if (countE >=3)
-                  clearInterval(IntervalExpand);
+              if (count >=3)
+                  clearInterval(refreshIntervalId);
              }, 0.5);
 
            
@@ -3163,8 +2998,8 @@ $(function () {
          }else 
          {
            
-            var countM = 0 ;
-            var IntervalMinimize = setInterval(function() {
+            var count = 0 ;
+            var refreshIntervalId = setInterval(function() {
                 if (tabOn===0)
                 $("#graph-container").highcharts().reflow();
                else{
@@ -3173,21 +3008,21 @@ $(function () {
              }
              $('#main-resize').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  countM++;
+                  count++;
 
               });
               $('#right-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  countM++;
+                  count++;
 
               });
              $('#left-main').one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend"
               ,function(e){
-                  countM++;
+                  count++;
 
               });
-              if (countM >=3)
-                  clearInterval(IntervalMinimize);
+              if (count >=3)
+                  clearInterval(refreshIntervalId);
              }, 0.5);  
              
            $('#projects-btn').remove();
@@ -3360,10 +3195,20 @@ $(function () {
         
         $('#legend-helper .fa').toggleClass('fa-times-circle fa-info-circle');
        
-    });       
+    });  
+    
+    //clear text search from taxon when lost focus
+    $("#taxon-search").focusout(function() {
+       taxonS.val("");
+       $('#taxon-checkbox').attr("disabled", false);            
+       $('#taxon-checkbox').prop('checked', true);
+  });
+  
+      //clear text search from users when lost focus
+    $("#user-search").focusout(function() {
+       userS.val("");
+       $('#user-checkbox').attr("disabled", false);            
+       $('#user-checkbox').prop('checked', true);
+  });
 
-});
-
-
-
-              
+});           

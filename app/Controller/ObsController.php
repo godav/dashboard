@@ -142,7 +142,7 @@ class ObsController extends AppController {
                  "SELECT projects.id, projects.slug, projects.icon_url, COUNT(observations_projects.observation_id) as observations_count "
                  ."FROM projects left join observations_projects on projects.id=observations_projects.project_id "		
                  ."GROUP BY projects.id "
-                 ."ORDER BY observations_count");
+                 ."ORDER BY observations_count DESC");
          
          $projects = array();
           
